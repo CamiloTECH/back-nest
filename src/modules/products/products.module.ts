@@ -8,10 +8,14 @@ import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { ProductsRepository } from './products.repository';
 import { ValidateProductMiddleware } from 'src/middleware/validateProduct.middleware';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Product } from './products.entity';
+import { Category } from '../categories/categories.entity';
 
 @Module({
-  providers: [ProductsService, ProductsRepository],
   controllers: [ProductsController],
+  imports: [TypeOrmModule.forFeature([Product, Category])],
+  providers: [ProductsService, ProductsRepository],
 })
 export class ProductsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

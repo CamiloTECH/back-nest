@@ -10,9 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from 'src/models/userModel';
-import { AuthGuard } from 'src/auth/auth.guard';
-// import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
+import { User } from './users.entity';
 // import { DateAddedInterceptor } from 'src/interceptors/dateAdder.interceptor';
 
 @Controller('users')
@@ -21,7 +20,7 @@ export class UsersController {
 
   // @UseInterceptors(DateAddedInterceptor)
   @Get()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   getUsers(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '5',

@@ -4,14 +4,18 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { UsersRepository } from './users.repository';
 import { ValidateUserMiddleware } from 'src/middleware/validateUser.middleware';
+import { User } from './users.entity';
 
 @Module({
-  providers: [UsersService, UsersRepository],
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
+  providers: [UsersService, UsersRepository],
 })
 export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

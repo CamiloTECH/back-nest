@@ -6,7 +6,6 @@ import {
 import Ajv from 'ajv';
 
 import { NextFunction, Request, Response } from 'express';
-import { Product } from 'src/models/productModel';
 
 const ajv = new Ajv();
 
@@ -38,7 +37,7 @@ const validate = ajv.compile(productSchema);
 @Injectable()
 export class ValidateProductMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    const product: Product = req.body;
+    const product = req.body;
     const valid = validate(product);
     if (!valid) {
       throw new BadRequestException('Los datos son inválidos');

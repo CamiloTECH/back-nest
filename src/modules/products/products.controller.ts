@@ -10,8 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { Product } from 'src/models/productModel';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
+import { Product } from './products.entity';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -48,5 +48,10 @@ export class ProductsController {
   @UseGuards(AuthGuard)
   deleteProducts(@Param('id') id: string) {
     return this.productsService.deleteProduct(id);
+  }
+
+  @Post('seeder')
+  addProducts(@Body() products: any[]) {
+    return this.productsService.addProducts(products);
   }
 }
