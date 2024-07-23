@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './orders.entity';
 import { In, MoreThan, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { Product } from '../products/products.entity';
 import { OrderDetail } from './orderDetails.entity';
+import { CreateOrderDto } from 'src/dtos/CreateOrderDto.dto';
 
 @Injectable()
 export class OrdersRepository {
@@ -28,51 +29,50 @@ export class OrdersRepository {
     });
   }
 
-  async addOrder(order: { userId: string; products: { id: string }[] }) {
+  async addOrder(order: CreateOrderDto) {
     const user = await this.usersRepository.findOne({
       where: { id: order.userId },
     });
-    if (user) {
-      const productsId = order.products.map(({ id }) => id);
-
-      const newOrder = new Order();
-      newOrder.user_id = user;
-      newOrder.date = new Date();
-
-      const orderSave = await this.ordersRepository.save(newOrder);
-
-      const products = await this.productsRepository.find({
-        where: {
-          id: In(productsId),
-          stock: MoreThan(0),
-        },
-      });
-
-      const newProducts = products.map((product) => ({
-        ...product,
-        stock: product.stock - 1,
-      }));
-      const updateProducts = await this.productsRepository.save(newProducts);
-
-      const newOrderDetail = new OrderDetail();
-      newOrderDetail.order_id = orderSave;
-      newOrderDetail.products = products;
-      const price = updateProducts.reduce((prev, current) => {
-        return prev + Number(current.price);
-      }, 0);
-      newOrderDetail.price = price;
-
-      await this.orderDetailsRepository.save(newOrderDetail);
-
-      const orderFind = await this.ordersRepository.findOne({
-        where: { id: orderSave.id },
-        relations: {
-          order_details: true,
-        },
-      });
-      return orderFind;
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    return { message: 'Error' };
+    const productsId = order.products.map(({ id }) => id);
+
+    const newOrder = this.ordersRepository.create({
+      user_id: user,
+      date: new Date(),
+    });
+    const orderSave = await this.ordersRepository.save(newOrder);
+
+    const products = await this.productsRepository.find({
+      where: {
+        id: In(productsId),
+        stock: MoreThan(0),
+      },
+    });
+
+    const newProducts = products.map((product) => ({
+      ...product,
+      stock: product.stock - 1,
+    }));
+    const updateProducts = await this.productsRepository.save(newProducts);
+
+    const totalPrice = updateProducts.reduce((sum, product) => {
+      return sum + Number(product.price);
+    }, 0);
+    const newOrderDetail = this.orderDetailsRepository.create({
+      order_id: orderSave,
+      products: products,
+      price: totalPrice,
+    });
+
+    await this.orderDetailsRepository.save(newOrderDetail);
+
+    const orderFind = await this.ordersRepository.findOne({
+      where: { id: orderSave.id },
+      relations: ['order_details'],
+    });
+    return orderFind;
   }
 }

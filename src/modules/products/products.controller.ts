@@ -4,6 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -18,17 +20,14 @@ export class ProductsController {
 
   @Get()
   getProducts(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '5',
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 5,
   ) {
-    return this.productsService.getProducts({
-      page: parseInt(page),
-      limit: parseInt(limit),
-    });
+    return this.productsService.getProducts({ page, limit });
   }
 
   @Get(':id')
-  getProduct(@Param('id') id: string) {
+  getProduct(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.getProduct(id);
   }
 
@@ -40,13 +39,16 @@ export class ProductsController {
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  updateProducts(@Param('id') id: string, @Body() product: Product) {
+  updateProducts(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() product: Product,
+  ) {
     return this.productsService.updateProduct(id, product);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  deleteProducts(@Param('id') id: string) {
+  deleteProducts(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.deleteProduct(id);
   }
 

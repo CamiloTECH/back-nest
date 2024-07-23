@@ -13,8 +13,8 @@ import { ValidateUserMiddleware } from 'src/middleware/validateUser.middleware';
 import { User } from './users.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
+  imports: [TypeOrmModule.forFeature([User])],
   providers: [UsersService, UsersRepository],
 })
 export class UsersModule implements NestModule {

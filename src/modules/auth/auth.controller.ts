@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersRepository } from 'src/modules/users/users.repository';
+import { LoginUserDto } from 'src/dtos/LoginUserDto.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,7 +22,7 @@ export class AuthController {
   }
 
   @Post()
-  signin(@Body() credentials: { email: string; password: string }) {
+  signin(@Body() credentials: LoginUserDto) {
     if (credentials.email && credentials.password) {
       return this.usersRepository.signinUser(credentials);
     }

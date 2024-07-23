@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from './products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
@@ -26,7 +26,10 @@ export class ProductsRepository {
       where: { id },
       relations: { category_id: true, order_details: true },
     });
-    return user || { message: 'Product not found' };
+    if (user) {
+      return user;
+    }
+    throw new NotFoundException('Product not found');
   }
 
   async createProduct(product: Omit<Product, 'id'>) {
@@ -40,7 +43,7 @@ export class ProductsRepository {
     if (updateProduct.affected) {
       return updateProduct;
     }
-    return { message: 'Product not found' };
+    throw new NotFoundException('Product not found');
   }
 
   async deleteProduct(id: string) {
@@ -48,7 +51,7 @@ export class ProductsRepository {
     if (deleteProduct.affected) {
       return { id, ...deleteProduct };
     }
-    return { message: 'Product not found' };
+    throw new NotFoundException('Product not found');
   }
 
   async addProducts(products: any[]) {

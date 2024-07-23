@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from 'src/dtos/CreateUserDto.dto';
 
 @Injectable()
 export class UsersRepository {
@@ -22,24 +27,23 @@ export class UsersRepository {
       },
     });
     if (user) {
-      const { address, email, id, name, phone, city, country, orders } = user;
-      return { address, email, id, name, phone, city, country, orders };
+      return user;
     }
-    return { message: 'User not found' };
+    throw new NotFoundException('User not found');
   }
 
-  async createUser(user: Omit<User, 'id'>) {
+  async createUser(user: CreateUserDto) {
     const newUser = this.usersRepository.create(user);
     const saveUser = await this.usersRepository.save(newUser);
     return { id: saveUser.id };
   }
 
-  async updateUser(id: string, user: Omit<User, 'id'>) {
+  async updateUser(id: string, user: CreateUserDto) {
     const updateUser = await this.usersRepository.update({ id }, user);
     if (updateUser.affected) {
       return { id, ...updateUser };
     }
-    return { message: 'User not found' };
+    throw new NotFoundException('User not found');
   }
 
   async deleteUser(id: string) {
@@ -47,7 +51,7 @@ export class UsersRepository {
     if (deleteUser.affected) {
       return { id, ...deleteUser };
     }
-    return { message: 'User not found' };
+    throw new NotFoundException('User not found');
   }
 
   async signinUser(credentials: { email: string; password: string }) {
@@ -57,6 +61,7 @@ export class UsersRepository {
     if (findUser && findUser.password === credentials.password) {
       return findUser;
     }
-    return { message: 'User or password incorrect' };
+
+    throw new BadRequestException('User or password incorrect');
   }
 }
