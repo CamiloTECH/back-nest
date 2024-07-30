@@ -17,12 +17,18 @@ export class AuthService {
     if (findUser) {
       throw new BadRequestException('Email already exist');
     }
-    const hashedPassword = await bcrypt.hash(user.password, 5);
+    const { confirmPassword, ...restUser } = user;
+    const comparePassword = restUser.password === confirmPassword;
+
+    if (!comparePassword) {
+      throw new BadRequestException('Passwords must match');
+    }
+    const hashedPassword = await bcrypt.hash(restUser.password, 5);
     if (!hashedPassword) {
       throw new BadRequestException('Error in signUp');
     }
     return this.usersRepository.createUser({
-      ...user,
+      ...restUser,
       password: hashedPassword,
     });
   }

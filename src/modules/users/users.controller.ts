@@ -8,11 +8,13 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { CreateUserDto, UpdateUserDto } from 'src/dtos/CreateUserDto.dto';
+import { Request } from 'express';
 // import { DateAddedInterceptor } from 'src/interceptors/dateAdder.interceptor';
 
 @Controller('users')
@@ -25,7 +27,10 @@ export class UsersController {
   getUsers(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '5',
+    @Req() request: Request,
   ) {
+    console.log(request);
+
     const parsePage = parseInt(page);
     const parseLimit = parseInt(limit);
     return this.usersService.getUsers({ page: parsePage, limit: parseLimit });
@@ -38,7 +43,7 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body() user: CreateUserDto) {
+  createUser(@Body() user: Omit<CreateUserDto, 'confirmPassword'>) {
     return this.usersService.createUser(user);
   }
 

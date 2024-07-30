@@ -14,7 +14,7 @@ export class UsersService {
     return this.usersRepository.getUser(id);
   }
 
-  createUser(user: CreateUserDto) {
+  createUser(user: Omit<CreateUserDto, 'confirmPassword'>) {
     return this.usersRepository.createUser(user);
   }
 

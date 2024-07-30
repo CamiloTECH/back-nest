@@ -30,10 +30,12 @@ export class UsersRepository {
     throw new NotFoundException('User not found');
   }
 
-  async createUser(user: CreateUserDto) {
+  async createUser(user: Omit<CreateUserDto, 'confirmPassword'>) {
     const newUser = this.usersRepository.create(user);
     const saveUser = await this.usersRepository.save(newUser);
-    return { id: saveUser.id };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...restUser } = saveUser;
+    return restUser;
   }
 
   async updateUser(id: string, user: UpdateUserDto) {
