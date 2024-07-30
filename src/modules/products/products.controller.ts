@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   ParseUUIDPipe,
   Post,
   Put,
@@ -20,10 +19,15 @@ export class ProductsController {
 
   @Get()
   getProducts(
-    @Query('page', ParseIntPipe) page: number = 1,
-    @Query('limit', ParseIntPipe) limit: number = 5,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '5',
   ) {
-    return this.productsService.getProducts({ page, limit });
+    const parsePage = parseInt(page);
+    const parseLimit = parseInt(limit);
+    return this.productsService.getProducts({
+      page: parsePage,
+      limit: parseLimit,
+    });
   }
 
   @Get(':id')
@@ -39,10 +43,9 @@ export class ProductsController {
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  updateProducts(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() product: Product,
-  ) {
+  updateProducts(@Param('id', ParseUUIDPipe) id: string, @Body() product: any) {
+    console.log({ product, id });
+
     return this.productsService.updateProduct(id, product);
   }
 

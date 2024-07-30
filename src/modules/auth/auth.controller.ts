@@ -1,31 +1,19 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersRepository } from 'src/modules/users/users.repository';
 import { LoginUserDto } from 'src/dtos/LoginUserDto.dto';
+import { CreateUserDto } from 'src/dtos/CreateUserDto.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private usersRepository: UsersRepository,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @Get()
-  getAuth() {
-    return this.authService.getAuth();
+  @Post('signup')
+  signUp(@Body() user: CreateUserDto) {
+    return this.authService.signUp(user);
   }
 
-  @Post()
-  signin(@Body() credentials: LoginUserDto) {
-    if (credentials.email && credentials.password) {
-      return this.usersRepository.signinUser(credentials);
-    }
-    throw new BadRequestException('Los datos son inválidos');
+  @Post('signin')
+  signIn(@Body() credentials: LoginUserDto) {
+    return this.authService.signIn(credentials);
   }
 }

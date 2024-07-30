@@ -8,6 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Product } from '../modules/products/products.entity';
+import { PartialType } from '@nestjs/swagger';
 
 export class CreateOrderDto {
   @IsUUID()
@@ -21,3 +22,5 @@ export class CreateOrderDto {
   @Type(() => Product)
   products: Partial<Product>[];
 }
+
+export class UpdateOrderDto extends PartialType(CreateOrderDto) {}

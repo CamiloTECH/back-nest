@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from 'src/dtos/CreateUserDto.dto';
+import { CreateUserDto, UpdateUserDto } from 'src/dtos/CreateUserDto.dto';
 
 @Injectable()
 export class UsersRepository {
@@ -22,9 +22,7 @@ export class UsersRepository {
   async getUser(id: string) {
     const user = await this.usersRepository.findOne({
       where: { id },
-      relations: {
-        orders: true,
-      },
+      relations: { orders: true },
     });
     if (user) {
       return user;
@@ -38,7 +36,7 @@ export class UsersRepository {
     return { id: saveUser.id };
   }
 
-  async updateUser(id: string, user: CreateUserDto) {
+  async updateUser(id: string, user: UpdateUserDto) {
     const updateUser = await this.usersRepository.update({ id }, user);
     if (updateUser.affected) {
       return { id, ...updateUser };
@@ -63,5 +61,9 @@ export class UsersRepository {
     }
 
     throw new BadRequestException('User or password incorrect');
+  }
+
+  async getUserByEmail(email: string) {
+    return this.usersRepository.findOne({ where: { email } });
   }
 }

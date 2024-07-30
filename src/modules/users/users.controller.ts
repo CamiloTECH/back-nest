@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   ParseUUIDPipe,
   Post,
   Put,
@@ -13,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
-import { CreateUserDto } from 'src/dtos/CreateUserDto.dto';
+import { CreateUserDto, UpdateUserDto } from 'src/dtos/CreateUserDto.dto';
 // import { DateAddedInterceptor } from 'src/interceptors/dateAdder.interceptor';
 
 @Controller('users')
@@ -24,10 +23,12 @@ export class UsersController {
   @Get()
   @UseGuards(AuthGuard)
   getUsers(
-    @Query('page', ParseIntPipe) page: number = 1,
-    @Query('limit', ParseIntPipe) limit: number = 5,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '5',
   ) {
-    return this.usersService.getUsers({ page, limit });
+    const parsePage = parseInt(page);
+    const parseLimit = parseInt(limit);
+    return this.usersService.getUsers({ page: parsePage, limit: parseLimit });
   }
 
   @Get(':id')
@@ -44,7 +45,7 @@ export class UsersController {
   @Put(':id')
   @UseGuards(AuthGuard)
   updateUser(
-    @Body() user: CreateUserDto,
+    @Body() user: UpdateUserDto,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.usersService.updateUser(id, user);
