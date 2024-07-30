@@ -15,6 +15,9 @@ import { UsersService } from './users.service';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { CreateUserDto, UpdateUserDto } from 'src/dtos/CreateUserDto.dto';
 import { Request } from 'express';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/roles.enum';
+import { RolesGuard } from 'src/guards/roles.guard';
 // import { DateAddedInterceptor } from 'src/interceptors/dateAdder.interceptor';
 
 @Controller('users')
@@ -23,7 +26,8 @@ export class UsersController {
 
   // @UseInterceptors(DateAddedInterceptor)
   @Get()
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   getUsers(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '5',
@@ -37,18 +41,22 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   getUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUser(id);
   }
 
   @Post()
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   createUser(@Body() user: Omit<CreateUserDto, 'confirmPassword'>) {
     return this.usersService.createUser(user);
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   updateUser(
     @Body() user: UpdateUserDto,
     @Param('id', ParseUUIDPipe) id: string,
@@ -57,7 +65,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
   }

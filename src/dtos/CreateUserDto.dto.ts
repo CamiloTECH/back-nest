@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -60,6 +61,9 @@ export class CreateUserDto {
   @MinLength(5)
   @MaxLength(20)
   city: string;
+
+  @IsOptional()
+  isAdmin: boolean;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}

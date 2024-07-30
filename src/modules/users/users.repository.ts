@@ -16,7 +16,13 @@ export class UsersRepository {
   ) {}
 
   async getUsers({ page, limit }: { page: number; limit: number }) {
-    return this.usersRepository.find({ take: limit, skip: page - 1 });
+    const users = await this.usersRepository.find({
+      take: limit,
+      skip: page - 1,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return users.map(({ password, isAdmin, ...restUser }) => restUser);
   }
 
   async getUser(id: string) {
@@ -25,7 +31,9 @@ export class UsersRepository {
       relations: { orders: true },
     });
     if (user) {
-      return user;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...restUser } = user;
+      return restUser;
     }
     throw new NotFoundException('User not found');
   }
@@ -34,7 +42,7 @@ export class UsersRepository {
     const newUser = this.usersRepository.create(user);
     const saveUser = await this.usersRepository.save(newUser);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...restUser } = saveUser;
+    const { password, isAdmin, ...restUser } = saveUser;
     return restUser;
   }
 

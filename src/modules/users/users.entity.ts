@@ -30,6 +30,9 @@ export class User {
   @Column({ type: 'varchar', length: 50 })
   city?: string;
 
+  @Column({ type: 'boolean', default: false })
+  isAdmin: boolean;
+
   @OneToMany(() => Order, (order) => order.user_id)
   orders: Order[];
 }

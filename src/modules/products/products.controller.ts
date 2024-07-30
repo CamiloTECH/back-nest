@@ -13,6 +13,9 @@ import {
 import { ProductsService } from './products.service';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { Product } from './products.entity';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/roles.enum';
+import { RolesGuard } from 'src/guards/roles.guard';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -36,13 +39,15 @@ export class ProductsController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   createProducts(@Body() products: Product) {
     return this.productsService.createProduct(products);
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   updateProducts(@Param('id', ParseUUIDPipe) id: string, @Body() product: any) {
     console.log({ product, id });
 
@@ -50,7 +55,8 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   deleteProducts(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.deleteProduct(id);
   }
