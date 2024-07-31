@@ -11,11 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { AuthGuard } from 'src/modules/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { Product } from './products.entity';
-import { Roles } from 'src/decorators/roles.decorator';
-import { Role } from 'src/roles.enum';
-import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from '../../decorators/roles.decorator';
+import { Role } from '../../roles.enum';
+import { RolesGuard } from '../../guards/roles.guard';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

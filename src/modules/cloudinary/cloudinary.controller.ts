@@ -12,7 +12,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { MinSizeValidatorPipe } from 'src/pipes/minSizeValidator.pipe';
+import { MinSizeValidatorPipe } from '../../pipes/minSizeValidator.pipe';
 import { CloudinaryService } from './cloudinary.service';
 import { AuthGuard } from '../auth/auth.guard';
 

@@ -12,12 +12,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthGuard } from 'src/modules/auth/auth.guard';
-import { CreateUserDto, UpdateUserDto } from 'src/dtos/CreateUserDto.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { CreateUserDto, UpdateUserDto } from '../../dtos/CreateUserDto.dto';
 import { Request } from 'express';
-import { Roles } from 'src/decorators/roles.decorator';
-import { Role } from 'src/roles.enum';
-import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from '../../decorators/roles.decorator';
+import { Role } from '../../roles.enum';
+import { RolesGuard } from '../../guards/roles.guard';
 // import { DateAddedInterceptor } from 'src/interceptors/dateAdder.interceptor';
 
 @Controller('users')

@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto } from 'src/dtos/CreateOrderDto.dto';
+import { CreateOrderDto } from '../../dtos/CreateOrderDto.dto';
 import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('orders')
