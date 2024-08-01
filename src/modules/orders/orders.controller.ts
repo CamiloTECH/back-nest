@@ -10,17 +10,21 @@ import {
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from '../../dtos/CreateOrderDto.dto';
 import { AuthGuard } from '../auth/auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  @ApiBearerAuth()
   @Get(':id')
   @UseGuards(AuthGuard)
   getOrder(@Param('id', ParseUUIDPipe) id: string) {
     return this.ordersService.getOrder(id);
   }
 
+  @ApiBearerAuth()
   @Post()
   @UseGuards(AuthGuard)
   addOrder(@Body() order: CreateOrderDto) {
