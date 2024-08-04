@@ -73,7 +73,7 @@ export class ProductsController {
   }
 
   @Post('seeder')
-  addProducts(@Body() products: CreateProductDto[]) {
-    return this.productsService.addProducts(products);
+  addProducts() {
+    return this.productsService.addProducts();
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -13,7 +13,7 @@ export class CategoriesController {
   }
 
   @Post('seeder')
-  addCategories(@Body() categories: { name: string }[]) {
-    return this.categoriesService.addCategories(categories);
+  addCategories() {
+    return this.categoriesService.addCategories();
   }
 }

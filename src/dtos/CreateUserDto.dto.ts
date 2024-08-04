@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiHideProperty, PartialType } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEmpty,
@@ -112,6 +112,7 @@ export class CreateUserDto {
    */
   @IsEmpty()
   @IsOptional()
+  @ApiHideProperty()
   isAdmin: boolean;
 }
 

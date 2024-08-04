@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../../entities/categories.entity';
 
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import * as data from '../../data.json';
 
 @Injectable()
 export class CategoriesRepository {
@@ -15,8 +16,21 @@ export class CategoriesRepository {
     return this.categoriesRepository.find();
   }
 
-  async addCategories(categories: { name: string }[]) {
-    const createCategories = await this.categoriesRepository.save(categories);
-    return createCategories;
+  async addCategories() {
+    const categories = data.map((item) => item.category);
+
+    const existingCategories = await this.categoriesRepository.find({
+      where: { name: In(categories) },
+    });
+
+    const existingNames = existingCategories.map((category) => category.name);
+
+    const newCategoriesData = data.filter((item) => {
+      return !existingNames.includes(item.category);
+    });
+
+    const newCategories = this.categoriesRepository.create(newCategoriesData);
+
+    return this.categoriesRepository.save(newCategories);
   }
 }

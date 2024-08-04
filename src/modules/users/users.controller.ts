@@ -40,8 +40,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Get(':id')
-  @Roles(Role.Admin)
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(AuthGuard)
   getUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUser(id);
   }
@@ -56,8 +55,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Put(':id')
-  @Roles(Role.Admin)
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(AuthGuard)
   updateUser(
     @Body() user: UpdateUserDto,
     @Param('id', ParseUUIDPipe) id: string,

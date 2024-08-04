@@ -21,7 +21,13 @@ describe('Auth Controller', () => {
 
   beforeEach(async () => {
     authService = {
-      signIn: () => Promise.resolve({ success: true, token: 'token valido' }),
+      signIn: () =>
+        Promise.resolve({
+          token: 'token valido',
+          ...mockUser,
+          id: 'sdasd',
+          orders: [],
+        }),
       signUp: ({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         password,

@@ -7,8 +7,15 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Product } from '../entities/products.entity';
+
 import { PartialType } from '@nestjs/swagger';
+
+class ProductOrderDto {
+  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+}
 
 export class CreateOrderDto {
   /**
@@ -29,8 +36,8 @@ export class CreateOrderDto {
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  @Type(() => Product)
-  products: Partial<Product>[];
+  @Type(() => ProductOrderDto)
+  products: ProductOrderDto[];
 }
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {}

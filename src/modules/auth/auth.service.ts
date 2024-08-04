@@ -40,7 +40,8 @@ export class AuthService {
     if (!findUser) {
       throw new BadRequestException('Email or password incorrect');
     }
-    const isValidUser = await bcrypt.compare(user.password, findUser.password);
+    const { password, isAdmin, ...restUser } = findUser;
+    const isValidUser = await bcrypt.compare(user.password, password);
     if (!isValidUser) {
       throw new BadRequestException('Email or password incorrect');
     }
@@ -48,10 +49,10 @@ export class AuthService {
       id: findUser.id,
       sub: findUser.id,
       email: findUser.email,
-      roles: [findUser.isAdmin ? Role.Admin : Role.User],
+      roles: [isAdmin ? Role.Admin : Role.User],
     };
 
     const token = this.jwtService.sign(userPayload);
-    return { token, success: true };
+    return { token, ...restUser };
   }
 }

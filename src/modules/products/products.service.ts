@@ -30,7 +30,7 @@ export class ProductsService {
     return this.productsRepository.deleteProduct(id);
   }
 
-  addProducts(products: CreateProductDto[]) {
-    return this.productsRepository.addProducts(products);
+  addProducts() {
+    return this.productsRepository.addProducts();
   }
 }

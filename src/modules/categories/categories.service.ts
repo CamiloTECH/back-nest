@@ -9,7 +9,7 @@ export class CategoriesService {
     return this.categoriesRepository.getCategories();
   }
 
-  addCategories(categories: { name: string }[]) {
-    return this.categoriesRepository.addCategories(categories);
+  addCategories() {
+    return this.categoriesRepository.addCategories();
   }
 }

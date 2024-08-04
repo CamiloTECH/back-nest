@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Product } from '../../entities/products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThan, Repository } from 'typeorm';
+import { In, MoreThan, Repository } from 'typeorm';
+import * as data from '../../data.json';
 
 import {
   CreateProductDto,
@@ -27,20 +32,36 @@ export class ProductsRepository {
   }
 
   async getProduct(id: string) {
-    const user = await this.productsRepository.findOne({
+    const product = await this.productsRepository.findOne({
       where: { id },
       relations: { category_id: true, order_details: true },
     });
-    if (user) {
-      return user;
+    if (product) {
+      if (product.stock === 0) {
+        throw new BadRequestException('Product not available');
+      }
+      return product;
     }
     throw new NotFoundException('Product not found');
   }
 
   async createProduct(product: CreateProductDto) {
-    const newUsers = this.productsRepository.create(product);
-    const saveUser = await this.productsRepository.save(newUsers);
-    return { id: saveUser.id };
+    const findProduct = await this.productsRepository.findOne({
+      where: { name: product.name },
+    });
+    if (findProduct) {
+      throw new BadRequestException('Product already exists');
+    }
+    const findCategory = await this.categoriesRepository.findOne({
+      where: { name: product.category },
+    });
+    if (!findCategory) {
+      throw new NotFoundException('Category not found');
+    }
+    const newProduct = this.productsRepository.create(product);
+    newProduct.category_id = findCategory;
+    const saveProduct = await this.productsRepository.save(newProduct);
+    return saveProduct;
   }
 
   async updateProduct(id: string, product: UpdateProductDto) {
@@ -59,20 +80,34 @@ export class ProductsRepository {
     throw new NotFoundException('Product not found');
   }
 
-  async addProducts(products: CreateProductDto[]) {
-    const categories = await this.categoriesRepository.find();
+  async addProducts() {
+    const productNames = data.map((item) => item.name);
+    const categoryNames = data.map((item) => item.category);
 
-    const productsInsert = products.map((product) => {
-      return {
-        name: product.name,
-        price: product.price,
-        stock: product.stock,
-        description: product.description,
-        category_id: categories.find(({ name }) => name === product.category),
-      };
+    const existingCategories = await this.categoriesRepository.find({
+      where: { name: In(categoryNames) },
     });
 
-    const resultInsert = await this.productsRepository.save(productsInsert);
-    return resultInsert;
+    const existingProducts = await this.productsRepository.find({
+      where: { name: In(productNames) },
+    });
+
+    const existingProductNames = existingProducts.map(({ name }) => name);
+
+    const newProductsData = data
+      .filter((item) => !existingProductNames.includes(item.name))
+      .map((item) => {
+        return this.productsRepository.create({
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          stock: item.stock,
+          category_id: existingCategories.find(({ name }) => {
+            return item.category === name;
+          }),
+        });
+      });
+
+    return this.productsRepository.save(newProductsData);
   }
 }

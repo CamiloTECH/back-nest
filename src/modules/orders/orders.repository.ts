@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { In, MoreThan, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from '../../entities/users.entity';
 import { Product } from '../../entities/products.entity';
 import { OrderDetail } from '../../entities/orderDetails.entity';
@@ -21,11 +25,7 @@ export class OrdersRepository {
     return this.ordersRepository.findOne({
       where: { id },
       relations: {
-        order_details: {
-          products: {
-            category_id: true,
-          },
-        },
+        order_details: { products: true },
       },
     });
   }
@@ -38,7 +38,34 @@ export class OrdersRepository {
       throw new NotFoundException('User not found');
     }
 
+    const validateProductArray = order.products.every((product) => {
+      return 'id' in product;
+    });
+
+    if (!validateProductArray) {
+      throw new BadRequestException('All products must have id prop');
+    }
+
     const productsId = order.products.map(({ id }) => id);
+
+    const products = await this.productsRepository.find({
+      where: { id: In(productsId) },
+    });
+
+    if (products.length === 0 || products.length < productsId.length) {
+      throw new NotFoundException('Products or product not available');
+    }
+
+    const stockAvailable = products.filter(({ stock }) => stock === 0);
+    if (stockAvailable.length) {
+      const productsOutStock = stockAvailable.map(({ id, name }) => ({
+        id,
+        name,
+      }));
+      throw new BadRequestException(productsOutStock, {
+        description: 'These products are out of stock',
+      });
+    }
 
     const newOrder = this.ordersRepository.create({
       user_id: user,
@@ -46,22 +73,14 @@ export class OrdersRepository {
     });
     const orderSave = await this.ordersRepository.save(newOrder);
 
-    const products = await this.productsRepository.find({
-      where: {
-        id: In(productsId),
-        stock: MoreThan(0),
-      },
+    let totalPrice = 0;
+    const newProducts = products.map((product) => {
+      totalPrice += Number(product.price);
+      return { ...product, stock: product.stock - 1 };
     });
 
-    const newProducts = products.map((product) => ({
-      ...product,
-      stock: product.stock - 1,
-    }));
-    const updateProducts = await this.productsRepository.save(newProducts);
+    await this.productsRepository.save(newProducts);
 
-    const totalPrice = updateProducts.reduce((sum, product) => {
-      return sum + Number(product.price);
-    }, 0);
     const newOrderDetail = this.orderDetailsRepository.create({
       order_id: orderSave,
       products: products,

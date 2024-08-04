@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from '../../entities/users.entity';
@@ -28,11 +24,11 @@ export class UsersRepository {
   async getUser(id: string) {
     const user = await this.usersRepository.findOne({
       where: { id },
-      relations: { orders: true },
+      relations: { orders: { order_details: { products: true } } },
     });
     if (user) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...restUser } = user;
+      const { password, isAdmin, ...restUser } = user;
       return restUser;
     }
     throw new NotFoundException('User not found');
@@ -60,17 +56,6 @@ export class UsersRepository {
       return { id, ...deleteUser };
     }
     throw new NotFoundException('User not found');
-  }
-
-  async signinUser(credentials: { email: string; password: string }) {
-    const findUser = await this.usersRepository.findOne({
-      where: { email: credentials.email },
-    });
-    if (findUser && findUser.password === credentials.password) {
-      return findUser;
-    }
-
-    throw new BadRequestException('User or password incorrect');
   }
 
   async getUserByEmail(email: string) {
