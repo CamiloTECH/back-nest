@@ -6,7 +6,7 @@ import {
 import { UploadApiResponse, v2 } from 'cloudinary';
 import * as toStream from 'buffer-to-stream';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../products/products.entity';
+import { Product } from '../../entities/products.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

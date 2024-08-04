@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsEmpty,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -88,6 +89,7 @@ export class CreateUserDto {
    *
    */
   @IsString()
+  @IsOptional()
   @MinLength(5)
   @MaxLength(20)
   country: string;
@@ -99,14 +101,16 @@ export class CreateUserDto {
    */
   @IsString()
   @MinLength(5)
+  @IsOptional()
   @MaxLength(20)
   city: string;
 
   /**
-   * Es un campo con valor por defecto en la base no debe ir en el cuerpo del body
+   * Es un campo con valor por defecto en la base. No debe ir en el cuerpo del body
    * @example false
    *
    */
+  @IsEmpty()
   @IsOptional()
   isAdmin: boolean;
 }

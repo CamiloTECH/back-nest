@@ -7,8 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { v4 as id } from 'uuid';
-import { User } from '../users/users.entity';
 import { OrderDetail } from './orderDetails.entity';
+import { User } from './users.entity';
+
 @Entity({ name: 'orders' })
 export class Order {
   @PrimaryGeneratedColumn('uuid')

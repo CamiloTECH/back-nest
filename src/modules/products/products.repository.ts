@@ -1,8 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Product } from './products.entity';
+import { Product } from '../../entities/products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
-import { Category } from '../categories/categories.entity';
+
+import {
+  CreateProductDto,
+  UpdateProductDto,
+} from 'src/dtos/CreateProductDto.dto';
+import { Category } from '../../entities/categories.entity';
 
 @Injectable()
 export class ProductsRepository {
@@ -32,13 +37,13 @@ export class ProductsRepository {
     throw new NotFoundException('Product not found');
   }
 
-  async createProduct(product: Omit<Product, 'id'>) {
+  async createProduct(product: CreateProductDto) {
     const newUsers = this.productsRepository.create(product);
     const saveUser = await this.productsRepository.save(newUsers);
     return { id: saveUser.id };
   }
 
-  async updateProduct(id: string, product: Omit<Product, 'id'>) {
+  async updateProduct(id: string, product: UpdateProductDto) {
     const updateProduct = await this.productsRepository.update({ id }, product);
     if (updateProduct.affected) {
       return updateProduct;
@@ -54,7 +59,7 @@ export class ProductsRepository {
     throw new NotFoundException('Product not found');
   }
 
-  async addProducts(products: any[]) {
+  async addProducts(products: CreateProductDto[]) {
     const categories = await this.categoriesRepository.find();
 
     const productsInsert = products.map((product) => {

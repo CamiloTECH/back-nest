@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from '../../guards/auth.guard';
 import { CreateUserDto, UpdateUserDto } from '../../dtos/CreateUserDto.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '../../roles.enum';

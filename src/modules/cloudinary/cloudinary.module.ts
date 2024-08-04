@@ -4,7 +4,7 @@ import { CloudinaryService } from './cloudinary.service';
 import { CloudinaryConfig } from '../../config/cloudinary';
 import { CloudinaryRepository } from './cloudinary.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from '../products/products.entity';
+import { Product } from '../../entities/products.entity';
 
 @Module({
   controllers: [CloudinaryController],

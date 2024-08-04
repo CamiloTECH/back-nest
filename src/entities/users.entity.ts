@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as id } from 'uuid';
-import { Order } from '../orders/orders.entity';
 import { Exclude } from 'class-transformer';
+import { Order } from './orders.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -21,13 +21,13 @@ export class User {
   @Column({ type: 'int' })
   phone: number;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar', length: 50, default: '' })
   country?: string;
 
   @Column({ type: 'varchar' })
   address: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar', length: 50, default: '' })
   city?: string;
 
   @Column({ type: 'boolean', default: false })

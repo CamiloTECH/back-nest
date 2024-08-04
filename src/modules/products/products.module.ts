@@ -1,29 +1,15 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { ProductsRepository } from './products.repository';
-import { ValidateProductMiddleware } from '../../middleware/validateProduct.middleware';
+
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './products.entity';
-import { Category } from '../categories/categories.entity';
+import { Product } from '../../entities/products.entity';
+import { Category } from '../../entities/categories.entity';
 
 @Module({
   controllers: [ProductsController],
   providers: [ProductsService, ProductsRepository],
   imports: [TypeOrmModule.forFeature([Product, Category])],
 })
-export class ProductsModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ValidateProductMiddleware)
-      .forRoutes(
-        { path: 'products/:id', method: RequestMethod.PUT },
-        { path: 'products', method: RequestMethod.POST },
-      );
-  }
-}
+export class ProductsModule {}

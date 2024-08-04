@@ -7,7 +7,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Product } from '../modules/products/products.entity';
+import { Product } from '../entities/products.entity';
 import { PartialType } from '@nestjs/swagger';
 
 export class CreateOrderDto {

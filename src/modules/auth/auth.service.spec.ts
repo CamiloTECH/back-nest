@@ -3,10 +3,9 @@ import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-
+import { Order } from '../../entities/orders.entity';
 import { UsersRepository } from '../users/users.repository';
 import { CreateUserDto } from '../../dtos/CreateUserDto.dto';
-import { Order } from '../orders/orders.entity';
 
 describe('AuthService', () => {
   let authService: AuthService;

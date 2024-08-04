@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ProductsRepository } from './products.repository';
-import { Product } from './products.entity';
+
+import {
+  CreateProductDto,
+  UpdateProductDto,
+} from 'src/dtos/CreateProductDto.dto';
 
 @Injectable()
 export class ProductsService {
@@ -14,11 +18,11 @@ export class ProductsService {
     return this.productsRepository.getProduct(id);
   }
 
-  createProduct(products: Product) {
+  createProduct(products: CreateProductDto) {
     return this.productsRepository.createProduct(products);
   }
 
-  updateProduct(id: string, Products: Product) {
+  updateProduct(id: string, Products: UpdateProductDto) {
     return this.productsRepository.updateProduct(id, Products);
   }
 
@@ -26,7 +30,7 @@ export class ProductsService {
     return this.productsRepository.deleteProduct(id);
   }
 
-  addProducts(products: any[]) {
+  addProducts(products: CreateProductDto[]) {
     return this.productsRepository.addProducts(products);
   }
 }

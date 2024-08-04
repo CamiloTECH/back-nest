@@ -7,7 +7,8 @@ import {
 } from 'typeorm';
 import { v4 as id } from 'uuid';
 import { Order } from './orders.entity';
-import { Product } from '../products/products.entity';
+import { Product } from './products.entity';
+
 @Entity({ name: 'order_detail' })
 export class OrderDetail {
   @PrimaryGeneratedColumn('uuid')
