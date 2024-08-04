@@ -23,7 +23,7 @@ export class AuthService {
     const comparePassword = restUser.password === confirmPassword;
 
     if (!comparePassword) {
-      throw new BadRequestException('Passwords must match');
+      throw new BadRequestException('Passwords are not the same');
     }
     const hashedPassword = await bcrypt.hash(restUser.password, 5);
     if (!hashedPassword) {

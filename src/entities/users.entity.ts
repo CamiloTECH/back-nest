@@ -21,13 +21,13 @@ export class User {
   @Column({ type: 'int' })
   phone: number;
 
-  @Column({ type: 'varchar', length: 50, default: '' })
+  @Column({ type: 'varchar', length: 50, default: null, nullable: true })
   country?: string;
 
   @Column({ type: 'varchar' })
   address: string;
 
-  @Column({ type: 'varchar', length: 50, default: '' })
+  @Column({ type: 'varchar', length: 50, default: null, nullable: true })
   city?: string;
 
   @Column({ type: 'boolean', default: false })
