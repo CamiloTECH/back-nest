@@ -17,15 +17,15 @@ export class AuthService {
   async signUp(user: CreateUserDto) {
     const findUser = await this.usersRepository.getUserByEmail(user.email);
     if (findUser) {
-      throw new BadRequestException('Email already exist');
+      throw new BadRequestException('User already exist');
     }
-    const { confirmPassword, ...restUser } = user;
-    const comparePassword = restUser.password === confirmPassword;
+    const { confirmPassword, password, ...restUser } = user;
+    const comparePassword = password === confirmPassword;
 
     if (!comparePassword) {
       throw new BadRequestException('Passwords are not the same');
     }
-    const hashedPassword = await bcrypt.hash(restUser.password, 5);
+    const hashedPassword = await bcrypt.hash(password, 5);
     if (!hashedPassword) {
       throw new BadRequestException('Error in signUp');
     }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from '../../entities/users.entity';
@@ -26,15 +30,21 @@ export class UsersRepository {
       where: { id },
       relations: { orders: { order_details: { products: true } } },
     });
-    if (user) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, isAdmin, ...restUser } = user;
-      return restUser;
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-    throw new NotFoundException('User not found');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, isAdmin, ...restUser } = user;
+    return restUser;
   }
 
   async createUser(user: Omit<CreateUserDto, 'confirmPassword'>) {
+    const findUser = this.usersRepository.findOne({
+      where: { email: user.email },
+    });
+    if (findUser) {
+      throw new BadRequestException('User already exists');
+    }
     const newUser = this.usersRepository.create(user);
     const saveUser = await this.usersRepository.save(newUser);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

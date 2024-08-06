@@ -28,17 +28,18 @@ export class CloudinaryRepository {
   }
 
   async updateImage(file: Express.Multer.File, id: string) {
-    const newImage = await this.uploadImage(file);
-    if (newImage && newImage.secure_url) {
-      const updateProduct = await this.productsRepository.update(
-        { id },
-        { imgUrl: newImage.secure_url },
-      );
-      if (updateProduct.affected) {
-        return updateProduct;
-      }
+    const findUser = await this.productsRepository.findOne({ where: { id } });
+    if (!findUser) {
       throw new NotFoundException('Product not found');
     }
-    throw new BadRequestException('Error al cargar la imagen');
+
+    const newImage = await this.uploadImage(file);
+    if (!newImage || !newImage.secure_url) {
+      throw new BadRequestException('Error loading image');
+    }
+    return this.productsRepository.update(
+      { id },
+      { imgUrl: newImage.secure_url },
+    );
   }
 }

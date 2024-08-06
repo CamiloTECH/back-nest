@@ -5,14 +5,13 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
-  Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '../../guards/auth.guard';
-import { CreateUserDto, UpdateUserDto } from '../../dtos/CreateUserDto.dto';
+import { UpdateUserDto } from '../../dtos/CreateUserDto.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '../../roles.enum';
 import { RolesGuard } from '../../guards/roles.guard';
@@ -45,13 +44,13 @@ export class UsersController {
     return this.usersService.getUser(id);
   }
 
-  @ApiBearerAuth()
-  @Post()
-  @Roles(Role.Admin)
-  @UseGuards(AuthGuard, RolesGuard)
-  createUser(@Body() user: CreateUserDto) {
-    return this.usersService.createUser(user);
-  }
+  // @ApiBearerAuth()
+  // @Post()
+  // @Roles(Role.Admin)
+  // @UseGuards(AuthGuard, RolesGuard)
+  // createUser(@Body() user: CreateUserDto) {
+  //   return this.usersService.createUser(user);
+  // }
 
   @ApiBearerAuth()
   @Put(':id')

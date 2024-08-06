@@ -89,10 +89,9 @@ export class OrdersRepository {
 
     await this.orderDetailsRepository.save(newOrderDetail);
 
-    const orderFind = await this.ordersRepository.findOne({
+    return this.ordersRepository.findOne({
       where: { id: orderSave.id },
       relations: ['order_details'],
     });
-    return orderFind;
   }
 }

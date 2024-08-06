@@ -36,13 +36,13 @@ export class ProductsRepository {
       where: { id },
       relations: { category_id: true, order_details: true },
     });
-    if (product) {
-      if (product.stock === 0) {
-        throw new BadRequestException('Product not available');
-      }
-      return product;
+    if (!product) {
+      throw new NotFoundException('Product not found');
     }
-    throw new NotFoundException('Product not found');
+    if (product.stock === 0) {
+      throw new BadRequestException('Product not available');
+    }
+    return product;
   }
 
   async createProduct(product: CreateProductDto) {
@@ -60,14 +60,13 @@ export class ProductsRepository {
     }
     const newProduct = this.productsRepository.create(product);
     newProduct.category_id = findCategory;
-    const saveProduct = await this.productsRepository.save(newProduct);
-    return saveProduct;
+    return this.productsRepository.save(newProduct);
   }
 
   async updateProduct(id: string, product: UpdateProductDto) {
     const updateProduct = await this.productsRepository.update({ id }, product);
     if (updateProduct.affected) {
-      return updateProduct;
+      return { id, ...updateProduct };
     }
     throw new NotFoundException('Product not found');
   }
