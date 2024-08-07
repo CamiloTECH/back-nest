@@ -72,11 +72,7 @@ export class ProductsRepository {
   }
 
   async deleteProduct(id: string) {
-    const deleteProduct = await this.productsRepository.delete({ id });
-    if (deleteProduct.affected) {
-      return { id, ...deleteProduct };
-    }
-    throw new NotFoundException('Product not found');
+    return this.updateProduct(id, { stock: 0 });
   }
 
   async addProducts() {

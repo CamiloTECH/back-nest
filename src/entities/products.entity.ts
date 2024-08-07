@@ -39,7 +39,9 @@ export class Product {
   @JoinColumn({ name: 'category_id' })
   category_id: Category;
 
-  @ManyToMany(() => OrderDetail, (order) => order.products)
+  @ManyToMany(() => OrderDetail, (order) => order.products, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable({
     name: 'products_orderDetails',
     joinColumn: {

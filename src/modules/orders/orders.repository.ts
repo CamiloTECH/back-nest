@@ -22,12 +22,16 @@ export class OrdersRepository {
     private orderDetailsRepository: Repository<OrderDetail>,
   ) {}
   async getOrder(id: string) {
-    return this.ordersRepository.findOne({
+    const order = await this.ordersRepository.findOne({
       where: { id },
       relations: {
         order_details: { products: true },
       },
     });
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+    return order;
   }
 
   async addOrder(order: CreateOrderDto) {

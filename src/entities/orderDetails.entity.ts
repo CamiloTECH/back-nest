@@ -17,7 +17,9 @@ export class OrderDetail {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @OneToOne(() => Order, (order) => order.order_details)
+  @OneToOne(() => Order, (order) => order.order_details, {
+    onDelete: 'CASCADE',
+  })
   order_id: Order;
 
   @ManyToMany(() => Product, (product) => product.order_details)

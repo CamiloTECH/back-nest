@@ -18,7 +18,7 @@ export class Order {
   @Column({ type: 'date', default: new Date() })
   date: Date;
 
-  @ManyToOne(() => User, (user) => user.orders)
+  @ManyToOne(() => User, (user) => user.orders, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'user_id' })
   user_id: User;
 
