@@ -64,7 +64,22 @@ export class ProductsRepository {
   }
 
   async updateProduct(id: string, product: UpdateProductDto) {
-    const updateProduct = await this.productsRepository.update({ id }, product);
+    let category_id: Category;
+    if (product.category) {
+      const categoryFind = await this.categoriesRepository.findOne({
+        where: { name: product.category },
+      });
+      if (!categoryFind) {
+        throw new NotFoundException('Category not found');
+      }
+      category_id = categoryFind;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { category, ...restProduct } = product;
+    const updateProduct = await this.productsRepository.update(
+      { id },
+      category_id ? { ...restProduct, category_id } : restProduct,
+    );
     if (updateProduct.affected) {
       return { id, ...updateProduct };
     }

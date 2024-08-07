@@ -1,4 +1,4 @@
-import { ApiHideProperty, PartialType } from '@nestjs/swagger';
+import { ApiHideProperty, OmitType, PartialType } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEmpty,
@@ -9,6 +9,7 @@ import {
   Matches,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -116,4 +117,29 @@ export class CreateUserDto {
   isAdmin: boolean;
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto extends PartialType(
+  OmitType(CreateUserDto, [
+    'isAdmin',
+    'confirmPassword',
+    'email',
+    'password',
+  ] as const),
+) {
+  @ValidateIf((o) => o.hasOwnProperty('email'))
+  @IsEmpty({ message: 'The email field is not allowed' })
+  email?: string;
+
+  @ValidateIf((o) => o.hasOwnProperty('password'))
+  @IsEmpty({ message: 'The password field is not allowed' })
+  password?: string;
+
+  @ValidateIf((o) => o.hasOwnProperty('confirmPassword'))
+  @IsEmpty({
+    message: 'The confirmPassword field is not allowed',
+  })
+  confirmPassword?: string;
+
+  @ValidateIf((o) => o.hasOwnProperty('isAdmin'))
+  @IsEmpty({ message: 'The isAdmin field is not allowed' })
+  isAdmin?: boolean;
+}

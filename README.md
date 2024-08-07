@@ -1,73 +1,85 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# E-Commerce Application
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descripción
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Esta es una aplicación de e-commerce desarrollada con [NestJS](https://nestjs.com/). Permite a los usuarios registrarse, iniciar sesión y comprar productos. La autenticación se realiza mediante JWT, y la aplicación cuenta con rutas públicas y privadas, así como protección de roles (admin y user). La documentación de la API está disponible en Swagger.
 
-## Description
+## Tecnologías Utilizadas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Backend:** NestJS
+- **Base de Datos:** PostgreSQL con TypeORM
+- **Autenticación:** JWT
+- **Documentación:** Swagger
+- **Almacenamiento de Archivos:** Cloudinary
 
-## Installation
+## Instalación
 
+1. Clona el repositorio:
 ```bash
-$ npm install
+  git clone <URL_DEL_REPOSITORIO>
 ```
 
-## Running the app
+2. Instala las dependencias:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+  npm install
 ```
 
-## Test
+3. Crea un archivo .env en la raíz del proyecto con las siguientes variables:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+  DB_POST=<tu_puerto_db>
+  DB_HOST=<tu_host_db>
+  DB_USERNAME=<tu_usuario_db>
+  DB_PASSWORD=<tu_contraseña_db>
+  DB_DATABASE=<tu_nombre_db>
+  CLOUDINARY_CLOUD_NAME=<tu_cloudinary_cloud_name>
+  CLOUDINARY_API_KEY=<tu_cloudinary_api_key>
+  CLOUDINARY_API_SECRET=<tu_cloudinary_api_secret>
+  CLOUDINARY_URL=<tu_cloudinary_url>
+  JWT_SECRET=<tu_secreto_jwt>
 ```
 
-## Support
+## Instalación
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Para preparar la base de datos y cargar los datos iniciales, sigue estos pasos:
 
-## Stay in touch
+1. Genera una migración:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+  npm run migrations:generate <ruta_donde_se_guardara_la_migracion>
+```
 
-## License
+2. Compila el proyecto:
 
-Nest is [MIT licensed](LICENSE).
+```bash
+  npm run build
+```
+
+3. Ejecuta la migración:
+
+```bash
+  npm run migrations:run
+```
+
+4. Ejecuta la aplicación:
+
+```bash
+  npm run start
+```
+
+5. Carga los datos iniciales:
+  - Ejecuta el endpoint POST /categories/seeder para cargar las categorías.
+  - Ejecuta el endpoint POST /products/seeder para cargar los productos.
+
+
+## Documentación
+
+La API está documentada con Swagger. Puedes acceder a la documentación en:
+
+```bash
+  http://localhost:3000/api
+```
+
+
+

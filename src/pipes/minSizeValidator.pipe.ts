@@ -8,6 +8,9 @@ import {
 @Injectable()
 export class MinSizeValidatorPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
+    if (typeof value === 'string') {
+      return value;
+    }
     const minSize = 10000;
     if (!value || !value.size) {
       throw new BadRequestException('Error reading file');
