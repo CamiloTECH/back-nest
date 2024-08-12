@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -29,5 +30,10 @@ export class OrdersController {
   @UseGuards(AuthGuard)
   addOrder(@Body() order: CreateOrderDto) {
     return this.ordersService.addOrder(order);
+  }
+
+  @Delete(':id')
+  deleteOrder(@Param('id', ParseUUIDPipe) id: string) {
+    return this.ordersService.deleteOrder(id);
   }
 }

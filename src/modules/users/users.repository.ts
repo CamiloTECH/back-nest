@@ -39,7 +39,7 @@ export class UsersRepository {
   }
 
   async createUser(user: Omit<CreateUserDto, 'confirmPassword'>) {
-    const findUser = this.usersRepository.findOne({
+    const findUser = await this.usersRepository.findOne({
       where: { email: user.email },
     });
     if (findUser) {

@@ -98,4 +98,35 @@ export class OrdersRepository {
       relations: ['order_details'],
     });
   }
+  async deleteOrder(orderId: string) {
+    const findOrder = await this.ordersRepository.findOne({
+      where: { id: orderId },
+      relations: {
+        order_details: {
+          products: true,
+        },
+      },
+    });
+    if (!findOrder) {
+      throw new NotFoundException('Order not found');
+    }
+
+    const products = findOrder.order_details.products.map(({ id }) => id);
+
+    const findProduct = await this.productsRepository.find({
+      where: { id: In(products) },
+    });
+
+    const updateProduct = findProduct.map(({ id, stock }) => {
+      return this.productsRepository.update({ id }, { stock: stock + 1 });
+    });
+
+    const waiting = await Promise.all(updateProduct);
+
+    if (!waiting) {
+      throw new BadRequestException('Error');
+    }
+
+    return this.ordersRepository.delete({ id: orderId });
+  }
 }

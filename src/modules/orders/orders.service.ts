@@ -13,4 +13,8 @@ export class OrdersService {
   addOrder(order: CreateOrderDto) {
     return this.ordersRepository.addOrder(order);
   }
+
+  deleteOrder(id: string) {
+    return this.ordersRepository.deleteOrder(id);
+  }
 }
